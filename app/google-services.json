@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "839045489373",
+    "firebase_url": "https://mypoint-35a21.firebaseio.com",
+    "project_id": "mypoint-35a21",
+    "storage_bucket": "mypoint-35a21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839045489373:android:fc2db8baaaa088d2073134",
+        "android_client_info": {
+          "package_name": "br.univates.mapspoints"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "839045489373-qbdh5na9cguancjgsn3bcg3iv1i82kca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.univates.mapspoints",
+            "certificate_hash": "2b1ead3146ad52bdeec47a13ea3e05138de306d1"
+          }
+        },
+        {
+          "client_id": "839045489373-3j68noiksnm8urql92a3ud1kh5sd5eja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLLuVTDTwyowTFMn8lMVvsmhK1DM7WxW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "839045489373-3j68noiksnm8urql92a3ud1kh5sd5eja.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

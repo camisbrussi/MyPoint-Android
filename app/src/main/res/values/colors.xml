@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#454444</color>
+    <color name="colorPrimaryDark">@android:color/black</color>
+    <color name="colorAccent">#4e71ba</color>
+    <color name="background_main">#454444</color>
+    <color name="backgroud_topbar">#292727</color>
+    <color name="background_button">#4e71ba</color>
+    <color name="text_color">#3C4567</color>
+
+
+</resources>
