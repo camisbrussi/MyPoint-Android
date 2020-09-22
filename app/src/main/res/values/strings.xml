@@ -1,12 +1,8 @@
 <resources>
-    <string name="app_name">MapsPoints</string>
+    <string name="app_name">MyPoints</string>
     <string name="title_activity_maps">Map</string>
-    <string name="tv_titulo_maps">MapsPoints</string>
-    <string name="bt_nova_rota">NOVA ROTA</string>
-    <string name="bt_enviar_localizacao">ENVIAR MINHA LOCALIZAÇÃO</string>
-    <string name="tv_rotas_realizadas">Rotas anteriores:</string>
+    <string name="tv_titulo_maps">MyPoints</string>
     <string name="tv_titulo_config">Configurações</string>
     <string name="tv_config_nickname">Apelido:</string>
-    <string name="tv_config_city">Cidade:</string>
-    <string name="bt_config_start">INICIAR</string>
+    <string name="bt_config_start">ENVIAR MINHA LOCALIZAÇÃO</string>
 </resources>

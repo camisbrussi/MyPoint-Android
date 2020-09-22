@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,14 +69,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
                 mMap.clear();
                 Iterable<DataSnapshot> points = dataSnapshot.getChildren();
                 for (DataSnapshot point : points) {
-                    System.out.println(point.getValue());
+                   // System.out.println(point.getValue());
                     System.out.println(point.getKey());
-                    System.out.println("LONG " + point.child("lng").getValue());
                     System.out.println("LAT " + point.child("lat").getValue());
-
+                    System.out.println("LONG " + point.child("lng").getValue());
 
                     double lat = Double.parseDouble(point.child("lat").getValue().toString()) ;
                     double lng = Double.parseDouble(point.child("lng").getValue().toString());
@@ -108,8 +108,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         try {
-
-
             mypoint.child("lat").setValue(location.getLatitude());
             mypoint.child("lng").setValue(location.getLongitude());
         } catch (Exception ex) {
@@ -118,8 +116,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(!atualizar){
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .zoom(17)
-                    .bearing(90)
+                    .zoom(15)
+                    .bearing(0)
                     .tilt(30)
                     .build();
 
@@ -145,8 +143,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onStop() {
-        mypoint.removeValue();
-        super.onStop();
+    protected void onPause() {
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+       mypoint.removeValue();
+        super.onDestroy();
     }
 }
