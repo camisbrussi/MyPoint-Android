@@ -44,14 +44,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean atualizar;
 
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference mypoint;
-
-
+//    private DatabaseReference mypoint = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Permissao.validarPermissoes(this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1 );
+        Permissao.validarPermissoes(MapsActivity.this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1 );
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -61,15 +59,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            nickname = bundle.getString("nickname");
 
             mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                 System.out.println("Provider ON");
             }
-            nickname = bundle.getString("nickname");
-
-            mypoint = reference.child(nickname);
 
         } else {
             Toast.makeText(this, "Problemas ao iniciar!", Toast.LENGTH_SHORT).show();
@@ -79,7 +75,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
 
                 mMap.clear();
                 Iterable<DataSnapshot> points = dataSnapshot.getChildren();
@@ -121,13 +116,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Point point = new Point();
         try {
-
             point.setLat(location.getLatitude());
             point.setLng(location.getLongitude());
-            mypoint.setValue(point);
+            reference.child(nickname).setValue(point);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         if (!atualizar) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -158,14 +153,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onPause() {
-
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
-        mypoint.removeValue();
+        reference.child(nickname).removeValue();
+//        mypoint.removeValue();
         super.onDestroy();
     }
 
