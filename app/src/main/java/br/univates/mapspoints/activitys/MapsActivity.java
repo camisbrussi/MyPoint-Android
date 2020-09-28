@@ -2,6 +2,7 @@ package br.univates.mapspoints.activitys;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -25,7 +27,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import br.univates.mapspoints.R;
+import br.univates.mapspoints.classes.Point;
+import br.univates.mapspoints.utils.Permissao;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, android.location.LocationListener {
@@ -40,9 +46,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mypoint;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Permissao.validarPermissoes(this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1 );
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -74,19 +84,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 Iterable<DataSnapshot> points = dataSnapshot.getChildren();
                 for (DataSnapshot point : points) {
-                   // System.out.println(point.getValue());
+                    /*System.out.println(point.getValue());
                     System.out.println(point.getKey());
                     System.out.println("LAT " + point.child("lat").getValue());
-                    System.out.println("LONG " + point.child("lng").getValue());
+                    System.out.println("LONG " + point.child("lng").getValue());*/
 
-                    double lat = Double.parseDouble(point.child("lat").getValue().toString()) ;
-                    double lng = Double.parseDouble(point.child("lng").getValue().toString());
+                    Point p = point.getValue(Point.class);
 
-                    LatLng latLng = new LatLng(lat, lng);
+                    LatLng latLng = new LatLng(p.getLat(), p.getLng());
 
                     mMap.addMarker(new MarkerOptions()
                             .position(latLng)
-                            .title(nickname));
+                            .title(point.getKey()));
+
+
                 }
 
             }
@@ -107,13 +118,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
+
+        Point point = new Point();
         try {
-            mypoint.child("lat").setValue(location.getLatitude());
-            mypoint.child("lng").setValue(location.getLongitude());
+
+            point.setLat(location.getLatitude());
+            point.setLng(location.getLongitude());
+            mypoint.setValue(point);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        if(!atualizar){
+        if (!atualizar) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
                     .zoom(15)
@@ -150,7 +165,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onDestroy() {
-       mypoint.removeValue();
+        mypoint.removeValue();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1){
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                System.out.println("Provider ON");
+            }
+        }
     }
 }
