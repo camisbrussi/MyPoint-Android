@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ import br.univates.mapspoints.utils.Permissao;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, android.location.LocationListener {
 
+    private final String TAG = "MapsActivity";
     private GoogleMap mMap;
 
     private LocationManager mlocManager;
@@ -62,6 +65,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             nickname = bundle.getString("nickname");
 
             mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                 System.out.println("Provider ON");
@@ -70,6 +75,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             Toast.makeText(this, "Problemas ao iniciar!", Toast.LENGTH_SHORT).show();
         }
+
+
+
+
 
         reference.addValueEventListener(new ValueEventListener() {
 
@@ -113,6 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged: La: " + location.getLatitude() + " - Lo: " + location.getLongitude());
+
 
         Point point = new Point();
         try {
@@ -137,9 +148,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        Log.d(TAG, "onStatusChanged: " + status);
     }
 
     @Override
@@ -155,9 +167,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         reference.child(nickname).removeValue();
-//        mypoint.removeValue();
         super.onDestroy();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
